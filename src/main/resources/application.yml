@@ -1,0 +1,36 @@
+server:
+  port: 9000
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: org.n52.edis.pegelonline
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties.spring.json.trusted.packages: org.n52.edis.pegelonlinekafkaconsumer.model
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+edis:
+  kafka:
+    consumer.topic: de.itzbund.pegelonline
+  mqtt:
+    server-uri: tcp://localhost:1883
+    client-id-prefix: edis.pegelonline.kafka-consumer
+    base-topic: edis/pegelonline
+    file-persistence-enabled: false
+    file-persistence-directory: /var/temp
+    reconnect: true
+    clean-session: true
+    connection-timeout: 60
+    keep-alive-interval: 60
+    message-delivery-monitor: logging
+    qos: 0
+    basic-authentication: true
+    username: rabbitmq
+    password: rabbitmq
+logging:
+  level:
+    root: info
+    org.n52.edis: debug
