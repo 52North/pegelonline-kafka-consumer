@@ -8,9 +8,9 @@ public class PegelonlineInternalTopic extends PegelonlineTopic {
         super();
     }
 
-    public PegelonlineInternalTopic(String root, String project, String water, String state, String region,
+    public PegelonlineInternalTopic(String root, String water, String state, String region,
                                     String agency, String uuid, String parameter, String dan) {
-        super(root, project, water, state, region, agency, uuid, parameter);
+        super(root, water, state, region, agency, uuid, parameter);
         this.dan = dan;
     }
 }
