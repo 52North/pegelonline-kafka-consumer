@@ -10,7 +10,7 @@ Make sure the services listed below are running locally:
 * Kafka: localhost:9092  
 * RaqbbitMQ: localhost:1883
 
-For testing purposes, the project comes with a `docker-compose.yml` for setting up a Kafka and RabbitMQ service locally via Docker.
+For testing purposes, the project comes with a [docker-compose.yml](./docker/docker-compose.yml) for setting up a Kafka and RabbitMQ service locally via Docker.
 
 ### Start the Consumer
 Run the PEGELONLINE Kafka Consumer by typing: `mvn spring-boot:run`.  
