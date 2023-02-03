@@ -1,0 +1,80 @@
+
+{
+    "uuid": "47174d8f-1b8e-4599-8a59-b580dd55bc87",
+    "number": "48900237",
+    "shortname": "EITZE",
+    "state": "Deutschland",
+    "region": "Sachsen",
+    "agency": "WSV",
+    "water": {
+        "shortname": "ALLER"
+    },
+    "timeseries": [
+        {
+            "uuid": "59174d8f-1c8e-9599-8a59-b580dd55bc18",
+            "shortname": "W",
+            "longname": "WASSERSTAND ROHDATEN",
+            "unit": "cm",
+            "equidistance": 15,
+            "currentMeasurement": {
+                "timestamp": "2023-01-04T19:15:00+01:00",
+                "value": 369.0
+            },
+            "measurements": [
+                {
+                    "timestamp": "2023-01-04T18:15:00+01:00",
+                    "value": 366.0
+                },
+                {
+                    "timestamp": "2023-01-04T18:30:00+01:00",
+                    "value": 367.0
+                },
+                {
+                    "timestamp": "2023-01-04T18:45:00+01:00",
+                    "value": 368.0
+                },
+                {
+                    "timestamp": "2023-01-04T19:00:00+01:00",
+                    "value": 369.0
+                },
+                {
+                    "timestamp": "2023-01-04T19:15:00+01:00",
+                    "value": 369.0
+                }
+            ]
+        },
+        {
+            "uuid": "59174d8f-1c8e-9599-8a59-b580dd55bc18",
+            "shortname": "WT",
+            "longname": "WASSERTEMPERATUR ROHDATEN",
+            "unit": "°C",
+            "equidistance": 1,
+            "currentMeasurement": {
+                "timestamp": "2023-01-04T19:15:00+01:00",
+                "value": 5.3
+            },
+            "measurements": [
+                {
+                    "timestamp": "2023-01-04T18:15:00+01:00",
+                    "value": 5.5
+                },
+                {
+                    "timestamp": "2023-01-04T18:30:00+01:00",
+                    "value": 5.4
+                },
+                {
+                    "timestamp": "2023-01-04T18:45:00+01:00",
+                    "value": 5.4
+                },
+                {
+                    "timestamp": "2023-01-04T19:00:00+01:00",
+                    "value": 5.3
+                },
+                {
+                    "timestamp": "2023-01-04T19:15:00+01:00",
+                    "value": 5.3
+                }
+            ]
+        }
+    ]
+}

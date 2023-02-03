@@ -21,54 +21,10 @@ For testing purposes, the consumer will start a tiny web server under `localhost
 3) The message payload will be processed and an MQTT topic extracted.
 4) The message will be forwarded to RabbitMQ under the extracted topic
 
-Use the cURL command listed below to send a dummy message to the consumer service.
+Use the cURL command listed below to send a dummy message to the consumer service. You'll find an example payload at [./docs/pegelonline-kafka-message-example.json](./docs/pegelonline-kafka-message-example.json). Just replace the `<payload>` placeholder in the cURL command with its content. 
 
 ```
 curl --location --request POST 'http://localhost:9000/send/messages' \
 --header 'Content-Type: application/json' \
---data-raw '{
-  "uuid": "593647aa-9fea-43ec-a7d6-6476a76ae868",
-  "number": "2710080",
-  "shortname": "BONN",
-  "longname": "BONN",
-  "km": 654.8,
-  "agency": "STANDORT DUISBURG",
-  "longitude": 7.108045442593695,
-  "latitude": 50.73639800887676,
-  "water": {
-    "shortname": "RHEIN",
-    "longname": "RHEIN"
-  },
-  "timeseries": [
-    {
-      "shortname": "W",
-      "longname": "WASSERSTAND ROHDATEN",
-      "unit": "cm",
-      "equidistance": 15,
-      "currentMeasurement": {
-        "timestamp": "2022-07-18T16:45:00+02:00",
-        "value": 124.0,
-        "trend": -1,
-        "stateMnwMhw": "normal",
-        "stateNswHsw": "unknown"
-      },
-      "gaugeZero": {
-        "unit": "m. ü. NHN",
-        "value": 42.713,
-        "validFrom": "2019-11-01"
-      }
-    },
-    {
-      "shortname": "Q",
-      "longname": "ABFLUSS_ROHDATEN",
-      "unit": "m³/s",
-      "equidistance": 15,
-      "currentMeasurement": {
-        "timestamp": "2022-07-18T16:15:00+02:00",
-        "value": 801.0,
-        "trend": -1
-      }
-    }
-  ]
-}'
+--data-raw '<payload>'
 ```
