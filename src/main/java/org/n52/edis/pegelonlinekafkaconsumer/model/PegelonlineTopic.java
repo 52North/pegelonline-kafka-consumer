@@ -1,8 +1,8 @@
-package org.n52.edis.pegelonlinekafkaconsumer.topics;
+package org.n52.edis.pegelonlinekafkaconsumer.model;
 
 public class PegelonlineTopic {
 
-    private static final String TOPIC_DELIMETER = "/";
+    private static final String TOPIC_DELIMITER = "/";
 
     private String root;
 
@@ -90,7 +90,7 @@ public class PegelonlineTopic {
     }
 
     public String asTopicString() {
-        return String.join(TOPIC_DELIMETER, getRoot(), getWater(), getState(), getRegion(), getAgency(), getUuid(),
+        return String.join(TOPIC_DELIMITER, getRoot(), getWater(), getState(), getRegion(), getAgency(), getUuid(),
                 getParameter());
     }
 }

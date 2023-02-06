@@ -1,4 +1,4 @@
-package org.n52.edis.pegelonlinekafkaconsumer.topics;
+package org.n52.edis.pegelonlinekafkaconsumer.model;
 
 public class PegelonlineInternalTopic extends PegelonlineTopic {
 
