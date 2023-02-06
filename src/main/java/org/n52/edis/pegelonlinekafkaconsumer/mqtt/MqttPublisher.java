@@ -5,48 +5,44 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.eclipse.paho.client.mqttv3.persist.MqttDefaultFilePersistence;
-import org.n52.edis.pegelonlinekafkaconsumer.model.PegelonlineMessage;
-import org.n52.edis.pegelonlinekafkaconsumer.topics.PegelonlineTopic;
-import org.n52.edis.pegelonlinekafkaconsumer.topics.TopicEncoder;
+import org.n52.edis.pegelonlinekafkaconsumer.model.PegelonlineMqttMessage;
+import org.n52.edis.pegelonlinekafkaconsumer.model.PegelonlineTopic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.UUID;
 
-@Component
-public class MqttPublisher extends MqttConfiguration implements MqttCallback, InitializingBean, DisposableBean {
+public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback, InitializingBean, DisposableBean {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MqttPublisher.class);
-
-    @Autowired
-    private MqttMessageDeliveryMonitor monitor;
-
-    private TopicEncoder topicEncoder;
 
     private ObjectMapper jsonMapper;
 
     private MqttClient mqttClient;
 
-    public void publishMessage(PegelonlineMessage payload) throws JsonProcessingException {
+    private MqttMessageDeliveryMonitor monitor;
+
+    public MqttPublisher() {
+
+    }
+
+    public MqttPublisher(MqttMessageDeliveryMonitor monitor) {
+        this.monitor = monitor;
+    }
+
+    public void publishMessage(PegelonlineMqttMessage payload, PegelonlineTopic topic) throws JsonProcessingException {
         MqttMessage message = new MqttMessage();
         message.setPayload(jsonMapper.writeValueAsBytes(payload));
         message.setQos(getQos());
         message.setRetained(isRetained());
-        List<PegelonlineTopic> topics = topicEncoder.encode(payload);
-        topics.forEach(t -> {
-            try {
-                mqttClient.publish(t.asTopicString(), message);
-            } catch (MqttException e) {
-                monitor.handleFailedMessageDelivery(message, e);
-            }
-        });
+        try {
+            mqttClient.publish(topic.asTopicString(), message);
+        } catch (MqttException e) {
+            monitor.handleFailedMessageDelivery(message, e);
+        }
     }
-
 
     @Override
     public void connectionLost(Throwable throwable) {
@@ -54,8 +50,7 @@ public class MqttPublisher extends MqttConfiguration implements MqttCallback, In
     }
 
     @Override
-    public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
-        ;
+    public void messageArrived(String s, MqttMessage mqttMessage) {
     }
 
     @Override
@@ -68,7 +63,6 @@ public class MqttPublisher extends MqttConfiguration implements MqttCallback, In
         logConfiguration();
         mqttClient = createMqttClient();
         jsonMapper = createObjectMapper();
-        topicEncoder = new TopicEncoder(getBaseTopic());
     }
 
     private ObjectMapper createObjectMapper() {

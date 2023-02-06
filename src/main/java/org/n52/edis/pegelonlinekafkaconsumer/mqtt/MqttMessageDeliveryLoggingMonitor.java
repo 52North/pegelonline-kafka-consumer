@@ -1,6 +1,7 @@
 package org.n52.edis.pegelonlinekafkaconsumer.mqtt;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +17,11 @@ public class MqttMessageDeliveryLoggingMonitor implements MqttMessageDeliveryMon
     @Override
     public void handleMessageDelivery(IMqttDeliveryToken token) {
         LOGGER.info("Successfully delivered message.");
-        LOGGER.info("Message ID: {}", token.getMessageId());
+        try {
+            LOGGER.info("Message: {}", token.getMessage());
+        } catch (MqttException e) {
+            LOGGER.error("Error while fetching delivered message.", e);
+        }
     }
 
     @Override

@@ -1,6 +1,6 @@
 package org.n52.edis.pegelonlinekafkaconsumer.controller;
 
-import org.n52.edis.pegelonlinekafkaconsumer.model.PegelonlineMessage;
+import org.n52.edis.pegelonlinekafkaconsumer.model.PegelonlineKafkaMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class MessageController {
     private KafkaTemplate<Object, Object> template;
 
     @PostMapping(path = "/send/messages")
-    public void sendFoo(@RequestBody PegelonlineMessage message) {
+    public void sendFoo(@RequestBody PegelonlineKafkaMessage message) {
         logger.debug("Received new PEGELONLINE message: {}", message);
         template.send("de.itzbund.pegelonline", message);
     }

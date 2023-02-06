@@ -1,6 +1,9 @@
 package org.n52.edis.pegelonlinekafkaconsumer.model;
 
 public class Timeseries {
+
+    private String uuid;
+
     private String shortname;
 
     private String longname;
@@ -9,18 +12,23 @@ public class Timeseries {
 
     private float equidistance;
 
-    private Measurement currentMeasurement;
-
-
     public Timeseries() {
     }
 
-    public Timeseries(String shortname, String longname, String unit, float equidistance, Measurement currentMeasurement) {
+    public Timeseries(String uuid, String shortname, String longname, String unit, float equidistance) {
+        this.uuid = uuid;
         this.shortname = shortname;
         this.longname = longname;
         this.unit = unit;
         this.equidistance = equidistance;
-        this.currentMeasurement = currentMeasurement;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public String getShortname() {
@@ -55,22 +63,14 @@ public class Timeseries {
         this.equidistance = equidistance;
     }
 
-    public Measurement getCurrentMeasurement() {
-        return currentMeasurement;
-    }
-
-    public void setCurrentMeasurement(Measurement currentMeasurement) {
-        this.currentMeasurement = currentMeasurement;
-    }
-
     @Override
     public String toString() {
         return "Timeseries{" +
-                "shortname='" + shortname + '\'' +
+                "uuid='" + uuid + '\'' +
+                ", shortname='" + shortname + '\'' +
                 ", longname='" + longname + '\'' +
                 ", unit='" + unit + '\'' +
                 ", equidistance=" + equidistance +
-                ", currentMeasurement=" + currentMeasurement +
                 '}';
     }
 }

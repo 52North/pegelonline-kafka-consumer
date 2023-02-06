@@ -1,7 +1,5 @@
 package org.n52.edis.pegelonlinekafkaconsumer.model;
 
-import java.util.List;
-
 public class PegelonlineMessage {
     private String uuid;
 
@@ -9,39 +7,26 @@ public class PegelonlineMessage {
 
     private String shortname;
 
-    private String longname;
+    private String state;
 
-    private float km;
+    private String region;
 
     private String agency;
 
-    private double longitude;
-
-    private double latitude;
-
     private Water water;
 
-    private List<Timeseries> timeseries;
-
-    private String name;
-
-
     public PegelonlineMessage() {
+
     }
 
-    public PegelonlineMessage(String uuid, String number, String shortname, String longname, float km, String agency,
-                              double longitude, double latitude, Water water, List<Timeseries> timeseries, String name) {
+    public PegelonlineMessage(String uuid, String number, String shortname, String state, String region, String agency, Water water) {
         this.uuid = uuid;
         this.number = number;
         this.shortname = shortname;
-        this.longname = longname;
-        this.km = km;
+        this.state = state;
+        this.region = region;
         this.agency = agency;
-        this.longitude = longitude;
-        this.latitude = latitude;
         this.water = water;
-        this.timeseries = timeseries;
-        this.name = name;
     }
 
     public String getUuid() {
@@ -68,20 +53,20 @@ public class PegelonlineMessage {
         this.shortname = shortname;
     }
 
-    public String getLongname() {
-        return longname;
+    public String getState() {
+        return state;
     }
 
-    public void setLongname(String longname) {
-        this.longname = longname;
+    public void setState(String state) {
+        this.state = state;
     }
 
-    public float getKm() {
-        return km;
+    public String getRegion() {
+        return region;
     }
 
-    public void setKm(float km) {
-        this.km = km;
+    public void setRegion(String region) {
+        this.region = region;
     }
 
     public String getAgency() {
@@ -92,22 +77,6 @@ public class PegelonlineMessage {
         this.agency = agency;
     }
 
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
     public Water getWater() {
         return water;
     }
@@ -116,36 +85,16 @@ public class PegelonlineMessage {
         this.water = water;
     }
 
-    public List<Timeseries> getTimeseries() {
-        return timeseries;
-    }
-
-    public void setTimeseries(List<Timeseries> timeseries) {
-        this.timeseries = timeseries;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     @Override
     public String toString() {
         return "PegelonlineMessage{" +
                 "uuid='" + uuid + '\'' +
                 ", number='" + number + '\'' +
                 ", shortname='" + shortname + '\'' +
-                ", longname='" + longname + '\'' +
-                ", km=" + km +
+                ", state='" + state + '\'' +
+                ", region='" + region + '\'' +
                 ", agency='" + agency + '\'' +
-                ", longitude=" + longitude +
-                ", latitude=" + latitude +
                 ", water=" + water +
-                ", timeseries=" + timeseries +
-                ", name='" + name + '\'' +
                 '}';
     }
 }

@@ -5,22 +5,13 @@ public class Measurement {
 
     private double value;
 
-    private double trend;
-
-    private String stateMnwMhw;
-
-    private String stateNswHsw;
-
     public Measurement() {
 
     }
 
-    public Measurement(String timestamp, double value, double trend, String stateMnwMhw, String stateNswHsw) {
+    public Measurement(String timestamp, double value) {
         this.timestamp = timestamp;
         this.value = value;
-        this.trend = trend;
-        this.stateMnwMhw = stateMnwMhw;
-        this.stateNswHsw = stateNswHsw;
     }
 
     public String getTimestamp() {
@@ -39,38 +30,11 @@ public class Measurement {
         this.value = value;
     }
 
-    public double getTrend() {
-        return trend;
-    }
-
-    public void setTrend(double trend) {
-        this.trend = trend;
-    }
-
-    public String getStateMnwMhw() {
-        return stateMnwMhw;
-    }
-
-    public void setStateMnwMhw(String stateMnwMhw) {
-        this.stateMnwMhw = stateMnwMhw;
-    }
-
-    public String getStateNswHsw() {
-        return stateNswHsw;
-    }
-
-    public void setStateNswHsw(String stateNswHsw) {
-        this.stateNswHsw = stateNswHsw;
-    }
-
     @Override
     public String toString() {
         return "Measurement{" +
                 "timestamp='" + timestamp + '\'' +
                 ", value=" + value +
-                ", trend=" + trend +
-                ", stateMnwMhw='" + stateMnwMhw + '\'' +
-                ", stateNswHsw='" + stateNswHsw + '\'' +
                 '}';
     }
 }

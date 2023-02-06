@@ -14,7 +14,10 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 edis:
   kafka:
-    consumer.topic: de.itzbund.pegelonline
+    consumer:
+      topic: de.itzbund.pegelonline
+      group: de.itzbund.edis
+      id: consumer01
   mqtt:
     server-uri: tcp://localhost:1883
     client-id-prefix: edis.pegelonline.kafka-consumer
