@@ -21,7 +21,7 @@ public class PegelonlineCosumer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PegelonlineCosumer.class);
 
-    @Autowired
+    @Autowired(required=false)
     private MqttPublisher mqttPublisher;
 
     @Autowired

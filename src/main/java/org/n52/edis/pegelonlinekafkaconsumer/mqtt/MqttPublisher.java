@@ -25,7 +25,7 @@ public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback
     private MqttMessageDeliveryMonitor monitor;
 
     public MqttPublisher() {
-
+        monitor = new MqttMessageDeliveryLoggingMonitor();
     }
 
     public MqttPublisher(MqttMessageDeliveryMonitor monitor) {
