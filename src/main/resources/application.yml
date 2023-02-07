@@ -19,6 +19,7 @@ edis:
       group: de.itzbund.edis
       id: consumer01
   mqtt:
+    enabled: true
     server-uri: tcp://localhost:1883
     client-id-prefix: edis.pegelonline.kafka-consumer
     base-topic: edis/pegelonline
