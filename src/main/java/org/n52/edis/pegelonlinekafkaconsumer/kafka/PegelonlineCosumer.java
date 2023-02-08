@@ -6,15 +6,14 @@ import org.n52.edis.pegelonlinekafkaconsumer.encode.TopicEncoder;
 import org.n52.edis.pegelonlinekafkaconsumer.model.PegelonlineKafkaMessage;
 import org.n52.edis.pegelonlinekafkaconsumer.model.PegelonlineMqttMessage;
 import org.n52.edis.pegelonlinekafkaconsumer.model.PegelonlineTopic;
-import org.n52.edis.pegelonlinekafkaconsumer.mqtt.MqttMessageDeliveryMonitor;
 import org.n52.edis.pegelonlinekafkaconsumer.mqtt.MqttPublisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.listener.CommonErrorHandler;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
 
 @Service
 public class PegelonlineCosumer {
@@ -29,6 +28,11 @@ public class PegelonlineCosumer {
 
     @Autowired
     private TopicEncoder topicEncoder;
+
+    @Bean
+    CommonErrorHandler errorHandler() {
+        return new CustomErrorHandler();
+    }
 
     @KafkaListener(id = "${edis.kafka.consumer.id}", topics = "${edis.kafka.consumer.topic}", groupId = "${edis.kafka.consumer.group}")
     public void consume(PegelonlineKafkaMessage message) {
@@ -52,7 +56,5 @@ public class PegelonlineCosumer {
                 LOGGER.error("Error while publishing MQTT message", e);
             }
         }));
-
-
     }
 }
