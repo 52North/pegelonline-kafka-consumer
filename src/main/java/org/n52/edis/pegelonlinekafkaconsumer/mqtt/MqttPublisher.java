@@ -65,11 +65,11 @@ public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback
         jsonMapper = createObjectMapper();
     }
 
-    private ObjectMapper createObjectMapper() {
+    protected ObjectMapper createObjectMapper() {
         return new ObjectMapper();
     }
 
-    private MqttClient createMqttClient() throws MqttException {
+    protected MqttClient createMqttClient() throws Exception {
         MqttClientPersistence persistence = createMqttClientPersistence();
         mqttClient = new MqttClient(getServerUri(), createClientId(), persistence);
         mqttClient.setCallback(this);
@@ -78,7 +78,7 @@ public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback
     }
 
 
-    private MqttClientPersistence createMqttClientPersistence() {
+    protected MqttClientPersistence createMqttClientPersistence() {
         if (isFilePersistenceEnabled()) {
             return new MqttDefaultFilePersistence(getFilePersistenceDirectory());
         } else {
@@ -86,7 +86,7 @@ public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback
         }
     }
 
-    private MqttConnectOptions createMqttConnectOptions() {
+    protected MqttConnectOptions createMqttConnectOptions() throws Exception {
         MqttConnectOptions options = new MqttConnectOptions();
         options.setAutomaticReconnect(isReconnect());
         options.setCleanSession(isCleanSession());
@@ -97,10 +97,11 @@ public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback
             options.setUserName(getUsername());
             options.setPassword(getPassword().toCharArray());
         }
+        options.setCleanSession(true);
         return options;
     }
 
-    private String createClientId() {
+    protected String createClientId() {
         return String.join(".", getClientIdPrefix(), UUID.randomUUID().toString());
     }
 

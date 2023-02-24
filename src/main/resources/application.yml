@@ -22,7 +22,7 @@ edis:
       id: consumer01
   mqtt:
     enabled: true
-    server-uri: tcp://localhost:1883
+    server-uri: ssl://localhost:8883
     client-id-prefix: edis.pegelonline.kafka-consumer
     base-topic: edis/pegelonline
     file-persistence-enabled: false
@@ -36,7 +36,15 @@ edis:
     basic-authentication: true
     username: rabbitmq
     password: rabbitmq
+    tls:
+      tls-enabled: true
+      peer-verification-enabled: true
+      ca-cert-file: "/path/to/caCertFile.pem"
+      client-cert-file: "/path/to/clientCertFile.pem"
+      key-file: "/path/to/clientKey.pem"
+      password: "bunnies"
+
 logging:
   level:
-    root: info
+    ssl: debug
     org.n52.edis: debug
