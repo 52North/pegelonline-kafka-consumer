@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+  rabbitmq:
+    ports:
+      - 8883:8883
+    volumes:
+      - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ./certs/ca_certificate.pem:/etc/rabbitmq/ca_certificate.pem
+      - ./certs/server_certificate.pem:/etc/rabbitmq/server_certificate.pem
+      - ./certs/server_key.pem:/etc/rabbitmq/server_key.pem
+      - ./certs/client_certificate.pem:/etc/rabbitmq/client_certificate.pem
+      - ./certs/client_key.pem:/etc/rabbitmq/client_key.pem
