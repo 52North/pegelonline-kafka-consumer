@@ -10,21 +10,52 @@ Make sure the services listed below are running locally:
 * Kafka: localhost:9092  
 * RaqbbitMQ: localhost:1883
 
-For testing purposes, the project comes with a [docker-compose.yml](./docker/docker-compose.yml) for setting up a Kafka and RabbitMQ service locally via Docker.
+For testing purposes, the project comes with a [docker-compose.yml](./docker/docker-compose.yml) for setting up a Kafka
+and RabbitMQ service locally via Docker.
+
+#### TLS Support
+In order to use TLS for connecting to RabbitMQ, the project also comes with a separate Docker Compose configuration.
+[docker-compose.tls.yml](./docker/docker-compose.tls.yml) inherits the default [docker-compose.yml](./docker/docker-compose.yml)
+by some extra configurations:
+* Certificate files are mounted into the RabbitMQ container (which are expected to be placed in the [./docker/certs](./docker/certs) folder)
+* Port 8883 will be opened for TLS connections
+* A [rabbitmq.conf](./docker/rabbitmq.conf), which has appropriate config definitions for TLS support is provided to the RabbitMQ container.
+
+You can read more about TLS support for RabbitMQ and how to generate appropriate certificates for testing purpose in
+the [RabbitMQ documentation](https://www.rabbitmq.com/ssl.html).
 
 ### Start the Consumer
 Run the PEGELONLINE Kafka Consumer by typing: `mvn spring-boot:run`.  
 
-For testing purposes, the consumer will start a tiny web server under `localhost:9000` and provide a single endpoint `http://localhost:9000/send/messages` for sending dummy messages. Sending a message to it will trigger the workflow listed below:
+For testing purposes, the consumer will start a tiny web server under `localhost:9000` and provide a single endpoint
+`http://localhost:9000/send/messages` for sending dummy messages. Sending a message to it will trigger the workflow
+listed below:
 1) The dummy message will be published via Kafka.
 2) A Kafka consumer receives the messages.
 3) The message payload will be processed and an MQTT topic extracted.
 4) The message will be forwarded to RabbitMQ under the extracted topic
 
-Use the cURL command listed below to send a dummy message to the consumer service. You'll find an example payload at [./docs/pegelonline-kafka-message-example.json](./docs/pegelonline-kafka-message-example.json). Just replace the `<payload>` placeholder in the cURL command with its content. 
+Use the cURL command listed below to send a dummy message to the consumer service. You'll find an example payload at
+[./docs/pegelonline-kafka-message-example.json](./docs/pegelonline-kafka-message-example.json). Just replace the
+`<payload>` placeholder in the cURL command with its content. 
 
 ```
 curl --location --request POST 'http://localhost:9000/send/messages' \
 --header 'Content-Type: application/json' \
 --data-raw '<payload>'
 ```
+
+### Run in Production
+To run the PEGELONLINE Kafka Consumer in production it is strongly recommended to use TLS for connecting to RabbitMQ.
+To do so use SSL protocol and port for the MQTT connection URI, e.g.:
+`edis.mqtt.server-uri=ssl://<remote-server-uri>:8883` 
+
+You also have to provide a trusted server CA certificate as well as client certificate and private key. Each
+should be in PEM format. You can set the file paths as well as other TLS related parameters via externalized properties:
+
+* `edis.mqtt.tls.tls-enabled`: Set to `true` if you want to use TLS enabled MQTT connections
+* `edis.mqtt.tls.peer-verification-enabled`: Set to `true` if you want to enable [TLS peer verification](https://www.rabbitmq.com/ssl.html#peer-verification) 
+* `edis.mqtt.tls.ca-cert-file`: Path to the server CA cert file in PEM format
+* `edis.mqtt.tls.client-cert-file`: Path to the client cert file in PEM format
+* `edis.mqtt.tls.key-file`: Path to the client key file in PEM format
+* `edis.mqtt.tls.password`: Password for the client key
