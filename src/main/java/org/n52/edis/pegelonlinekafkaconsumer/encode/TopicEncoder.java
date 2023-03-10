@@ -10,13 +10,11 @@ import java.util.stream.Collectors;
 @Component
 public class TopicEncoder {
 
+    private final static String WHITESPACE_TOKEN = "\\s+";
+    private final static String UNDERSCORE_TOKEN = "_";
+
     @Value("${edis.mqtt.base-topic}")
     private String baseTopic;
-
-    private final static String TOPIC_LEVEL_STATE_DEFAULT = "deutschland";
-
-    private static final String WHITESPACE_TOKEN = "\\s+";
-    private static final String UNDERSCORE_TOKEN = "_";
 
     public List<PegelonlineTopic> encode(PegelonlineKafkaMessage payload) {
         return payload.getTimeseries().stream().map(ts -> encode(payload, ts)).collect(Collectors.toList());

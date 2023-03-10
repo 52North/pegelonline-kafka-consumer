@@ -27,7 +27,13 @@ import java.security.cert.X509Certificate;
 
 public class MqttTlsPublisher extends MqttPublisher implements MqttCallback, InitializingBean, DisposableBean {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MqttTlsPublisher.class);
+    public MqttTlsPublisher() {
+        super();
+    }
+
+    public MqttTlsPublisher(MqttMessageDeliveryMonitor monitor) {
+        super(monitor);
+    }
 
     private Tls tls;
 
@@ -92,14 +98,6 @@ public class MqttTlsPublisher extends MqttPublisher implements MqttCallback, Ini
         this.tls = tls;
     }
 
-
-    public MqttTlsPublisher() {
-        super();
-    }
-
-    public MqttTlsPublisher(MqttMessageDeliveryMonitor monitor) {
-        super(monitor);
-    }
 
     @Override
     protected MqttConnectOptions createMqttConnectOptions() throws Exception {
@@ -203,13 +201,5 @@ public class MqttTlsPublisher extends MqttPublisher implements MqttCallback, Ini
         try (PEMParser reader = new PEMParser(new FileReader(filePath))) {
             return reader.readObject();
         }
-    }
-
-    private static TrustManager[] getTrustManagers(KeyStore caKeyStore)
-            throws NoSuchAlgorithmException, KeyStoreException {
-        TrustManagerFactory trustManagerFactory = TrustManagerFactory
-                .getInstance(TrustManagerFactory.getDefaultAlgorithm());
-        trustManagerFactory.init(caKeyStore);
-        return trustManagerFactory.getTrustManagers();
     }
 }

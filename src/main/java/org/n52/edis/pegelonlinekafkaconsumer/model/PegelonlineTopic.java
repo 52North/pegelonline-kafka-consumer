@@ -6,8 +6,6 @@ public class PegelonlineTopic {
 
     private String root;
 
-    private String project;
-
     private String water;
 
     private String state;

@@ -9,7 +9,8 @@ public class PegelonlineMqttMessage extends PegelonlineMessage {
 
     }
 
-    public PegelonlineMqttMessage(String uuid, String number, String shortname, String state, String region, String agency, Water water, MqttTimeseries timeseries) {
+    public PegelonlineMqttMessage(String uuid, String number, String shortname, String state, String region,
+                                  String agency, Water water, MqttTimeseries timeseries) {
         super(uuid, number, shortname, state, region, agency, water);
         this.timeseries = timeseries;
     }

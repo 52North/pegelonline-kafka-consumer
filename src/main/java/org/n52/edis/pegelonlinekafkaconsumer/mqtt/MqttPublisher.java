@@ -51,6 +51,8 @@ public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback
 
     @Override
     public void messageArrived(String s, MqttMessage mqttMessage) {
+        // We only publish messages but do not consume any. Thus, implementing this method is not needed.
+        throw new UnsupportedOperationException();
     }
 
     @Override

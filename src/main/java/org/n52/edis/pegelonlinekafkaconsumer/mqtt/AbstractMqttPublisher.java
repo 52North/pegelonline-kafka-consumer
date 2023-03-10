@@ -2,7 +2,6 @@ package org.n52.edis.pegelonlinekafkaconsumer.mqtt;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 
 public abstract class AbstractMqttPublisher {
 

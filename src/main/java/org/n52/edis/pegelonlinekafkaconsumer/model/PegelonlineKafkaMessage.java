@@ -10,7 +10,8 @@ public class PegelonlineKafkaMessage extends PegelonlineMessage{
         super();
     }
 
-    public PegelonlineKafkaMessage(String uuid, String number, String shortname, String state, String region, String agency, Water water, List<KafkaTimeseries> timeseries) {
+    public PegelonlineKafkaMessage(String uuid, String number, String shortname, String state, String region,
+                                   String agency, Water water, List<KafkaTimeseries> timeseries) {
         super(uuid, number, shortname, state, region, agency, water);
         this.timeseries = timeseries;
     }

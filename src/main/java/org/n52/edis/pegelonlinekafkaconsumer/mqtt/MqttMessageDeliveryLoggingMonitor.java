@@ -1,10 +1,7 @@
 package org.n52.edis.pegelonlinekafkaconsumer.mqtt;
 
-import com.fasterxml.jackson.core.exc.StreamReadException;
-import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.n52.edis.pegelonlinekafkaconsumer.model.PegelonlineMqttMessage;
@@ -20,7 +17,7 @@ import java.io.IOException;
 @ConditionalOnProperty(prefix = "edis.mqtt", name = "service", havingValue = "logging", matchIfMissing = true)
 public class MqttMessageDeliveryLoggingMonitor implements MqttMessageDeliveryMonitor, InitializingBean {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(MqttMessageDeliveryLoggingMonitor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MqttMessageDeliveryLoggingMonitor.class);
 
     private ObjectMapper jsonMapper;
 
