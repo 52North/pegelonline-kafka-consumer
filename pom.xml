@@ -32,6 +32,7 @@
 		<java.version>11</java.version>
 		<release-plugin.version>3.0.0-M7</release-plugin.version>
 		<nexus-plugin.version>1.6.13</nexus-plugin.version>
+		<project.scm.id>bce-scm</project.scm.id>
 	</properties>
 
 	<dependencies>
