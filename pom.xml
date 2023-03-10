@@ -104,6 +104,8 @@
 				<configuration>
 					<tagNameFormat>@{project.version}</tagNameFormat>
 					<pushChanges>true</pushChanges>
+					<username>${env.SCM_USERNAME}</username>
+					<password>${env.SCM_PASSWORD}</password>
 				</configuration>
 			</plugin>
 		</plugins>
