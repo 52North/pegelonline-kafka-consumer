@@ -59,3 +59,24 @@ should be in PEM format. You can set the file paths as well as other TLS related
 * `edis.mqtt.tls.client-cert-file`: Path to the client cert file in PEM format
 * `edis.mqtt.tls.key-file`: Path to the client key file in PEM format
 * `edis.mqtt.tls.password`: Password for the client key
+
+### Deploy
+For deploying a release to Nexus you can use the [Maven Release Plugin](https://maven.apache.org/maven-release/maven-release-plugin/index.html)
+by performing the steps listed below:
+1. Create a `<server>...</server>` entry within your local *.m2/settings.xml*:
+```xml
+<settings>
+    <servers>
+        <server>
+            <id>${repo_id}</id>
+            <username>${repo_user}</username>
+            <password>${repo_pw}</password>
+        </server>
+    </servers>
+</settings>
+```
+2. Execute the _prepare_ goal: `mvn release:prepare`. If you do not run in batch mode you will be interactively asked
+for version tags. The _prepare_ goal will tag your latest commit with the specified version label and pushes it to GitLab.
+3. Execute the _perform_ goal. You have to specify the `repo_id`, `repo_user` and `repo_pw` in your command:
+`mvn -Drepoid=nexus-releases -Drepo_user=user -Drepo_pw=password release:perform`. Only change `repo_user` and `repo_pw`!
+The _perform_ goal will release the latest artifact to Nexus.
