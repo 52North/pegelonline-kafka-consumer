@@ -18,12 +18,20 @@
 		<url>https://gitlab.itz.res.bund.de/edis/pegelonline-kafka-consumer</url>
 		<connection>https://gitlab.itz.res.bund.de/edis/pegelonline-kafka-consumer.git</connection>
 		<developerConnection>scm:git:https://gitlab.itz.res.bund.de/edis/pegelonline-kafka-consumer.git</developerConnection>
-	  <tag>HEAD</tag>
-  </scm>
+	  	<tag>HEAD</tag>
+  	</scm>
+
+	<distributionManagement>
+		<repository>
+			<id>nexus-releases</id>
+			<url>https://gwk.itz.res.bund.de/nexus/repository/releases</url>
+		</repository>
+	</distributionManagement>
 
 	<properties>
 		<java.version>11</java.version>
 		<release-plugin.version>3.0.0-M7</release-plugin.version>
+		<nexus-plugin.version>1.6.13</nexus-plugin.version>
 	</properties>
 
 	<dependencies>
@@ -91,7 +99,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
-				<version>3.0.0-M7</version>
+				<version>${release-plugin.version}</version>
 				<configuration>
 					<tagNameFormat>@{project.version}</tagNameFormat>
 					<pushChanges>false</pushChanges>
@@ -99,5 +107,34 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>releases</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.sonatype.plugins</groupId>
+						<artifactId>nexus-staging-maven-plugin</artifactId>
+						<version>${nexus-plugin.version}</version>
+						<executions>
+							<execution>
+								<id>default-deploy</id>
+								<phase>deploy</phase>
+								<goals>
+									<goal>deploy</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<serverId>nexus-releases</serverId>
+							<nexusUrl>https://gwk.itz.res.bund.de/nexus/</nexusUrl>
+							<skipStaging>true</skipStaging>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>
