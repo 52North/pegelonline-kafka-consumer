@@ -18,7 +18,7 @@
 		<url>https://gwk.itz.res.bund.de/scm/repo/edis/pegelonline-kafka-consumer</url>
 		<connection>https://gwk.itz.res.bund.de/scm/repo/edis/pegelonline-kafka-consumer</connection>
 		<developerConnection>scm:git:https://gwk.itz.res.bund.de/scm/repo/edis/pegelonline-kafka-consumer</developerConnection>
-	  	<tag>0.0.6</tag>
+	  	<tag>0.0.7-SNAPSHOT</tag>
   	</scm>
 
 	<distributionManagement>
