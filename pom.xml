@@ -102,7 +102,7 @@
 				<version>${release-plugin.version}</version>
 				<configuration>
 					<tagNameFormat>@{project.version}</tagNameFormat>
-					<pushChanges>false</pushChanges>
+					<pushChanges>true</pushChanges>
 				</configuration>
 			</plugin>
 		</plugins>
