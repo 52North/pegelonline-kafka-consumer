@@ -10,7 +10,7 @@
 
 	<groupId>org.n52.edis</groupId>
 	<artifactId>pegelonline-kafka-consumer</artifactId>
-	<version>0.0.24-SNAPSHOT</version>
+	<version>0.0.24</version>
 	<name>PEGELONLINE Kafka Consumer</name>
 	<description>Spring Boot application that consumes PEGELONLINE messages from Kafka</description>
 
@@ -18,7 +18,7 @@
 		<url>https://gwk.itz.res.bund.de/scm/repo/edis/pegelonline-kafka-consumer</url>
 		<connection>https://gwk.itz.res.bund.de/scm/repo/edis/pegelonline-kafka-consumer</connection>
 		<developerConnection>scm:git:https://gwk.itz.res.bund.de/scm/repo/edis/pegelonline-kafka-consumer</developerConnection>
-	  	<tag>HEAD</tag>
+	  	<tag>0.0.24</tag>
   	</scm>
 
 	<distributionManagement>
