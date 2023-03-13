@@ -81,3 +81,7 @@ for version tags. The _prepare_ goal will tag your latest commit with the specif
 3. Execute the _perform_ goal. You have to specify the `repo_id`, `repo_user` and `repo_pw` in your command:
 `mvn -Drepoid=nexus-releases -Drepo_user=user -Drepo_pw=password release:perform`. Only change `repo_user` and `repo_pw`!
 The _perform_ goal will release the latest artifact to Nexus.
+
+Note: If you aim to perform the release as part of your CI-pipeline e.g. within a Jenkins build environment, you also
+have to set Git credentials with write access. For this purpose, use the _jenkins-release_ profile, which uses
+`SCM_USERNAME` and `SCM_PASSWORD` environment variables, which you have to set in beforehand.
