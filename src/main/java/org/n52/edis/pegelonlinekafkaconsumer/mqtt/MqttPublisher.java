@@ -11,6 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.scheduling.annotation.Async;
 
 import java.util.UUID;
 
@@ -22,6 +26,8 @@ public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback
 
     private MqttClient mqttClient;
 
+    private MqttConnectOptions mqttConnectOptions;
+
     private MqttMessageDeliveryMonitor monitor;
 
     public MqttPublisher() {
@@ -30,6 +36,31 @@ public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback
 
     public MqttPublisher(MqttMessageDeliveryMonitor monitor) {
         this.monitor = monitor;
+    }
+
+    @Async
+    @Retryable(value = MqttException.class,
+            maxAttemptsExpression = "${edis.mqtt.initial-connect-retry-attempts}",
+            backoff = @Backoff(delayExpression = "${edis.mqtt.initial-connect-retry-delay}"))
+    public void connect() throws MqttException {
+        LOGGER.info("Trying to connect to MQTT broker...");
+        try {
+            mqttClient.connect(mqttConnectOptions);
+        } catch (MqttException ex) {
+            LOGGER.error("Could not connect to MQTT broker. Cause: {}", ex.getMessage());
+            LOGGER.debug("Mqtt command failure.", ex);
+            throw ex;
+        }
+        LOGGER.info("Connection to MQTT broker successfully established.");
+    }
+
+    @Recover
+    void recover(MqttException ex){
+        LOGGER.error("No initial connection to MQTT broker could be established. No MQTT support so far.");
+    }
+
+    public boolean isConnected() {
+        return mqttClient.isConnected();
     }
 
     public void publishMessage(PegelonlineMqttMessage payload, PegelonlineTopic topic) throws JsonProcessingException {
@@ -64,6 +95,7 @@ public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback
     public void afterPropertiesSet() throws Exception {
         logConfiguration();
         mqttClient = createMqttClient();
+        mqttConnectOptions = createMqttConnectOptions();
         jsonMapper = createObjectMapper();
     }
 
@@ -75,7 +107,6 @@ public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback
         MqttClientPersistence persistence = createMqttClientPersistence();
         mqttClient = new MqttClient(getServerUri(), createClientId(), persistence);
         mqttClient.setCallback(this);
-        mqttClient.connect(createMqttConnectOptions());
         return mqttClient;
     }
 
@@ -106,7 +137,6 @@ public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback
     protected String createClientId() {
         return String.join(".", getClientIdPrefix(), UUID.randomUUID().toString());
     }
-
 
     @Override
     public void destroy() throws Exception {
