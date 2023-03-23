@@ -12,7 +12,7 @@ Make sure the services listed below are running locally:
 * RaqbbitMQ: localhost:1883
 
 For testing purposes, the project comes with a [docker-compose.yml](./docker/docker-compose.yml) for setting up a Kafka
-and RabbitMQ service locally via Docker.
+and RabbitMQ service locally via Docker. Just run `docker compose up`
 
 #### TLS Support
 In order to use TLS for connecting to RabbitMQ, the project also comes with a separate Docker Compose configuration.
@@ -21,6 +21,8 @@ by some extra configurations:
 * Certificate files are mounted into the RabbitMQ container (which are expected to be placed in the [./docker/certs](./docker/certs) folder)
 * Port 8883 will be opened for TLS connections
 * A [rabbitmq.conf](./docker/rabbitmq.conf), which has appropriate config definitions for TLS support is provided to the RabbitMQ container.
+
+Start this setup by executing `docker compose -f .\docker-compose.yml -f .\docker-compose.tls.yml up`
 
 You can read more about TLS support for RabbitMQ and how to generate appropriate certificates for testing purpose in
 the [RabbitMQ documentation](https://www.rabbitmq.com/ssl.html).
