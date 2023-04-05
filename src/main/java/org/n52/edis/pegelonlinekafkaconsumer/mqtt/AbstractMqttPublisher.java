@@ -14,6 +14,8 @@ public abstract class AbstractMqttPublisher {
     private String serverUri;
     private String clientIdPrefix;
 
+    private String clientId;
+
     private String baseTopic;
     private boolean filePersistenceEnabled;
     private String filePersistenceDirectory;
@@ -44,7 +46,13 @@ public abstract class AbstractMqttPublisher {
         this.clientIdPrefix = clientIdPrefix;
     }
 
+    public String getClientId() {
+        return clientId;
+    }
 
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
 
     public boolean isFilePersistenceEnabled() {
         return filePersistenceEnabled;
@@ -155,6 +163,7 @@ public abstract class AbstractMqttPublisher {
         LOGGER.debug("Base topic: {}", getBaseTopic());
         LOGGER.debug("Connection timeout: {}", getConnectionTimeout());
         LOGGER.debug("Client ID prefix: {}", getClientIdPrefix());
+        LOGGER.debug("Client ID: {}", getClientId());
         LOGGER.debug("File persistence enabled: {}", isFilePersistenceEnabled());
         LOGGER.debug("File persistence directory: {}", getFilePersistenceDirectory());
         LOGGER.debug("Clean session: {}", isCleanSession());

@@ -135,7 +135,12 @@ public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback
     }
 
     protected String createClientId() {
-        return String.join(".", getClientIdPrefix(), UUID.randomUUID().toString());
+        if (getClientId() == null) {
+            return String.join(".", getClientIdPrefix(), UUID.randomUUID().toString());
+        }
+        else {
+            return String.join(".", getClientIdPrefix(), getClientId());
+        }
     }
 
     @Override

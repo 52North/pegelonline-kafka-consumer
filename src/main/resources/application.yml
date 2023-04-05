@@ -24,6 +24,7 @@ edis:
     enabled: true
     server-uri: tcp://localhost:1883
     client-id-prefix: edis.pegelonline.kafka-consumer
+    client-id: consumer01
     base-topic: edis/pegelonline
     file-persistence-enabled: false
     file-persistence-directory: /var/temp
