@@ -1,7 +1,6 @@
 package org.n52.edis.pegelonlinekafkaconsumer.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.n52.edis.pegelonlinekafkaconsumer.encode.MessageEncoder;
 import org.n52.edis.pegelonlinekafkaconsumer.encode.TopicEncoder;
 import org.n52.edis.pegelonlinekafkaconsumer.model.PegelonlineKafkaMessage;
@@ -18,11 +17,11 @@ import org.springframework.kafka.listener.CommonErrorHandler;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PegelonlineCosumer implements InitializingBean {
+public class PegelonlineConsumer implements InitializingBean {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PegelonlineCosumer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PegelonlineConsumer.class);
 
-    @Autowired(required=false)
+    @Autowired(required = false)
     private MqttPublisher mqttPublisher;
 
     @Autowired
@@ -44,20 +43,19 @@ public class PegelonlineCosumer implements InitializingBean {
             PegelonlineMqttMessage mqttMessage = messageEncoder.encode(message, ts, m);
             PegelonlineTopic topic = topicEncoder.encode(message, ts);
             try {
-                if(mqttPublisher != null) {
+                if (mqttPublisher != null) {
                     LOGGER.info("Try to publish measurement for timeseries {} and timestamp {} via MQTT.",
                             mqttMessage.getTimeseries().getUuid(),
                             mqttMessage.getTimeseries().getMeasurement().getTimestamp());
                     if (mqttPublisher.isConnected()) {
                         mqttPublisher.publishMessage(mqttMessage, topic);
-                    }
-                    else {
+                    } else {
                         LOGGER.warn("MQTT client is not connected. Measurements for timeseries {} and timestamp {} could " +
-                                "not be published via MQTT.",
+                                        "not be published via MQTT.",
                                 mqttMessage.getTimeseries().getUuid(),
                                 mqttMessage.getTimeseries().getMeasurement().getTimestamp());
                     }
-                }else{
+                } else {
                     LOGGER.info("Handled measurement in dev mode for timeseries {} and timestamp {}.",
                             mqttMessage.getTimeseries().getUuid(),
                             mqttMessage.getTimeseries().getMeasurement().getTimestamp());
