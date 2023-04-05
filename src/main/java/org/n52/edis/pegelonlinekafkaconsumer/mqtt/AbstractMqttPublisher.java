@@ -1,5 +1,9 @@
 package org.n52.edis.pegelonlinekafkaconsumer.mqtt;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.n52.edis.pegelonlinekafkaconsumer.model.PegelonlineMqttMessage;
+import org.n52.edis.pegelonlinekafkaconsumer.model.PegelonlineTopic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +27,6 @@ public abstract class AbstractMqttPublisher {
 
     private String username;
     private String password;
-
 
     public String getServerUri() {
         return serverUri;
@@ -139,6 +142,13 @@ public abstract class AbstractMqttPublisher {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public abstract void connect() throws MqttException;
+
+    public abstract boolean isConnected();
+
+    public abstract void publishMessage(PegelonlineMqttMessage payload, PegelonlineTopic topic)
+            throws JsonProcessingException;
 
     protected void logConfiguration() {
         LOGGER.debug("Server URI: {}", getServerUri());

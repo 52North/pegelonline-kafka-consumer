@@ -92,7 +92,7 @@ public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() throws MqttException {
         logConfiguration();
         mqttClient = createMqttClient();
         mqttConnectOptions = createMqttConnectOptions();
@@ -103,7 +103,7 @@ public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback
         return new ObjectMapper();
     }
 
-    protected MqttClient createMqttClient() throws Exception {
+    protected MqttClient createMqttClient() throws MqttException {
         MqttClientPersistence persistence = createMqttClientPersistence();
         mqttClient = new MqttClient(getServerUri(), createClientId(), persistence);
         mqttClient.setCallback(this);
@@ -119,7 +119,7 @@ public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback
         }
     }
 
-    protected MqttConnectOptions createMqttConnectOptions() throws Exception {
+    protected MqttConnectOptions createMqttConnectOptions() {
         MqttConnectOptions options = new MqttConnectOptions();
         options.setAutomaticReconnect(isReconnect());
         options.setCleanSession(isCleanSession());

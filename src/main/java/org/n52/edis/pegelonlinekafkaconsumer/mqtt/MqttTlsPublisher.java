@@ -22,10 +22,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.security.*;
 import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
 public class MqttTlsPublisher extends MqttPublisher implements MqttCallback, InitializingBean, DisposableBean {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MqttPublisher.class);
+
+    private Tls tls;
 
     public MqttTlsPublisher() {
         super();
@@ -34,8 +37,6 @@ public class MqttTlsPublisher extends MqttPublisher implements MqttCallback, Ini
     public MqttTlsPublisher(MqttMessageDeliveryMonitor monitor) {
         super(monitor);
     }
-
-    private Tls tls;
 
     private static class Tls {
 
@@ -100,7 +101,7 @@ public class MqttTlsPublisher extends MqttPublisher implements MqttCallback, Ini
 
 
     @Override
-    protected MqttConnectOptions createMqttConnectOptions() throws Exception {
+    protected MqttConnectOptions createMqttConnectOptions()  {
         MqttConnectOptions options = new MqttConnectOptions();
         options.setAutomaticReconnect(isReconnect());
         options.setCleanSession(isCleanSession());
@@ -112,8 +113,14 @@ public class MqttTlsPublisher extends MqttPublisher implements MqttCallback, Ini
             options.setPassword(getPassword().toCharArray());
         }
 
-        options.setSocketFactory(getSocketFactory(tls.getCaCertFile(), tls.getClientCertFile(),
-                tls.getKeyFile(), tls.getPassword()));
+        try {
+            options.setSocketFactory(getSocketFactory(tls.getCaCertFile(), tls.getClientCertFile(),
+                    tls.getKeyFile(), tls.getPassword()));
+        } catch (GeneralSecurityException | IOException ex) {
+            LOGGER.error("Cannot create SSLSocketFactory, due to {}. Fallback connect options will be created " +
+                    "without SSL support.", ex.getMessage());
+            LOGGER.debug("Error while creating SSLSocketFactory.", ex);
+        }
 
         options.setCleanSession(true);
         return options;
@@ -121,7 +128,7 @@ public class MqttTlsPublisher extends MqttPublisher implements MqttCallback, Ini
 
 
     public SSLSocketFactory getSocketFactory(final String caCrtFile, final String crtFile, final String keyFile,
-                                             final String password) throws Exception {
+                                             final String password) throws GeneralSecurityException, IOException {
         Security.addProvider(new BouncyCastleProvider());
         JcaX509CertificateConverter certificateConverter = new JcaX509CertificateConverter().setProvider("BC");
 
@@ -140,7 +147,7 @@ public class MqttTlsPublisher extends MqttPublisher implements MqttCallback, Ini
     }
 
     private TrustManager[] createTrustManager(String caCrtFile, JcaX509CertificateConverter certificateConverter)
-            throws IOException, CertificateException, KeyStoreException, NoSuchAlgorithmException {
+            throws GeneralSecurityException, IOException {
         // Load CA certificate
         X509CertificateHolder caCertHolder = (X509CertificateHolder) readPEMFile(caCrtFile);
         X509Certificate caCert = certificateConverter.getCertificate(caCertHolder);
@@ -160,7 +167,7 @@ public class MqttTlsPublisher extends MqttPublisher implements MqttCallback, Ini
 
     private KeyManager[] createKeyManager(String crtFile, String keyFile, String password,
                                           JcaX509CertificateConverter certificateConverter)
-            throws IOException, CertificateException, KeyStoreException, NoSuchAlgorithmException, UnrecoverableKeyException {
+            throws GeneralSecurityException, IOException {
         // Load client certificate
         X509CertificateHolder certHolder = (X509CertificateHolder) readPEMFile(crtFile);
         X509Certificate cert = certificateConverter.getCertificate(certHolder);
