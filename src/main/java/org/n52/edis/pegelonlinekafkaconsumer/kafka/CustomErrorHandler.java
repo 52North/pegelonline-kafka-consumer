@@ -10,7 +10,7 @@ import org.springframework.kafka.support.serializer.DeserializationException;
 
 public class CustomErrorHandler implements CommonErrorHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PegelonlineCosumer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomErrorHandler.class);
 
 
     @Override

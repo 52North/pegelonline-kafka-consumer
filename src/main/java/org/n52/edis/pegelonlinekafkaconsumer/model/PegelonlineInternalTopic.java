@@ -13,4 +13,12 @@ public class PegelonlineInternalTopic extends PegelonlineTopic {
         super(root, water, state, region, agency, uuid, parameter);
         this.dan = dan;
     }
+
+    public String getDan() {
+        return dan;
+    }
+
+    public void setDan(String dan) {
+        this.dan = dan;
+    }
 }
