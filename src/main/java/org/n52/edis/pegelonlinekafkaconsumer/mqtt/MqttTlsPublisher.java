@@ -26,7 +26,7 @@ import java.security.cert.X509Certificate;
 
 public class MqttTlsPublisher extends MqttPublisher implements MqttCallback, InitializingBean, DisposableBean {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MqttPublisher.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MqttTlsPublisher.class);
 
     private Tls tls;
 
