@@ -6,6 +6,7 @@ services:
       - 8883:8883
     volumes:
       - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ./definitions.json:/etc/rabbitmq/definitions.json
       - ./certs/ca_certificate.pem:/etc/rabbitmq/ca_certificate.pem
       - ./certs/server_certificate.pem:/etc/rabbitmq/server_certificate.pem
       - ./certs/server_key.pem:/etc/rabbitmq/server_key.pem
