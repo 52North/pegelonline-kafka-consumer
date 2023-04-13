@@ -87,3 +87,8 @@ The _perform_ goal will release the latest artifact to Nexus.
 Note: If you aim to perform the release as part of your CI-pipeline e.g. within a Jenkins build environment, you also
 have to set Git credentials with write access. For this purpose, use the _jenkins-release_ profile, which uses
 `SCM_USERNAME` and `SCM_PASSWORD` environment variables, which you have to set in beforehand.
+
+#### Deploy Snapshot
+For testing purposes you could also deploy a local snapshot build to the Nexus Snapshots repository:
+1. Build the project per `mvn clean install`
+2. Deploy the *-SNAPSHOT.jar artifact: `mvn -Drepoid=nexus-snapshot -Drepo_user=user -Drepo_pw=password deploy`
