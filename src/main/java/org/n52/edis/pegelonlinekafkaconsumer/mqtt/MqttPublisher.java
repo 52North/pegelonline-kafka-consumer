@@ -55,7 +55,7 @@ public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback
     }
 
     @Recover
-    void recover(MqttException ex){
+    void recover(MqttException ex) {
         LOGGER.error("No initial connection to MQTT broker could be established. No MQTT support so far.");
     }
 
@@ -137,8 +137,7 @@ public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback
     protected String createClientId() {
         if (getClientId() == null) {
             return String.join(".", getClientIdPrefix(), UUID.randomUUID().toString());
-        }
-        else {
+        } else {
             return String.join(".", getClientIdPrefix(), getClientId());
         }
     }

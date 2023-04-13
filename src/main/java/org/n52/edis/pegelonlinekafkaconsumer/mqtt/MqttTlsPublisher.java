@@ -127,7 +127,7 @@ public class MqttTlsPublisher extends MqttPublisher implements MqttCallback, Ini
     }
 
 
-    public SSLSocketFactory getSocketFactory(final String caCrtFile, final String crtFile, final String keyFile,
+    private SSLSocketFactory getSocketFactory(final String caCrtFile, final String crtFile, final String keyFile,
                                              final String password) throws GeneralSecurityException, IOException {
         Security.addProvider(new BouncyCastleProvider());
         JcaX509CertificateConverter certificateConverter = new JcaX509CertificateConverter().setProvider("BC");
