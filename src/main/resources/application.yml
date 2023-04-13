@@ -52,3 +52,8 @@ logging:
   level:
     ssl: debug
     org.n52.edis: debug
+management:
+  health.rabbit.enabled: false
+  endpoints.web.exposure.include: "info,health,metrics"
+  endpoint:
+    health.show-components: always
