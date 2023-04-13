@@ -10,7 +10,7 @@
 
 	<groupId>org.n52.edis</groupId>
 	<artifactId>pegelonline-kafka-consumer</artifactId>
-	<version>1.1.4-SNAPSHOT</version>
+	<version>1.2.0-SNAPSHOT</version>
 	<name>PEGELONLINE Kafka Consumer</name>
 	<description>Spring Boot application that consumes PEGELONLINE messages from Kafka</description>
 
