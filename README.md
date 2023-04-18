@@ -48,13 +48,21 @@ curl --location --request POST 'http://localhost:9000/send/messages' \
 --data-raw '<payload>'
 ```
 
+### Health Monitoring
+The PEGELONLINE Kafka Consumer comes with the [Spring Boot Actuator](https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html)
+module, which provides several monitoring features out-of-the box. You cab reach the available endpoints via
+[http://localhost:9000/actuator](http://localhost:9000/actuator). Learn more about its endpoints: 
+[https://docs.spring.io/spring-boot/docs/3.0.5/actuator-api/htmlsingle/](https://docs.spring.io/spring-boot/docs/3.0.5/actuator-api/htmlsingle/).
+
 ### Run in Production
 To run the PEGELONLINE Kafka Consumer in production it is strongly recommended to use TLS for connecting to RabbitMQ.
 To do so use SSL protocol and port for the MQTT connection URI, e.g.:
 `edis.mqtt.server-uri=ssl://<remote-server-uri>:8883` 
 
-You also have to provide a trusted server CA certificate as well as client certificate and private key. Each
-should be in PEM format. You can set the file paths as well as other TLS related parameters via externalized properties:
+If your target RabbitMQ server holds a certificate, which is signed by a custom CA, you have to provide the trusted
+server CA certificate. To support peer verification you may also want to provide a client certificate and private key.
+Each should be in PEM format. You can set the file paths as well as other TLS related parameters via externalized
+properties:
 
 * `edis.mqtt.tls.tls-enabled`: Set to `true` if you want to use TLS enabled MQTT connections
 * `edis.mqtt.tls.peer-verification-enabled`: Set to `true` if you want to enable [TLS peer verification](https://www.rabbitmq.com/ssl.html#peer-verification) 
