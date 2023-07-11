@@ -37,6 +37,7 @@
 		<java.version>11</java.version>
 		<release-plugin.version>3.0.0-M7</release-plugin.version>
 		<nexus-plugin.version>1.6.13</nexus-plugin.version>
+		<rpm-plugin.version>2.2.0</rpm-plugin.version>
 		<project.scm.id>bce-scm</project.scm.id>
 	</properties>
 
@@ -168,6 +169,48 @@
 				</plugins>
 			</build>
 		</profile>
+        <profile>
+            <id>rpm-package</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>rpm-maven-plugin</artifactId>
+                        <version>${rpm-plugin.version}</version>
+                        <extensions>true</extensions>
+                        <executions>
+                            <execution>
+                                <id>generate-rpm</id>
+                                <goals>
+                                    <goal>rpm</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <license>Apache License 2.0</license>
+                            <group>Applications/Internet</group>
+                            <packager>EDIS</packager>
+                            <defineStatements>
+                                <defineStatement>_unpackaged_files_terminate_build 0</defineStatement>
+                            </defineStatements>
+                            <mappings>
+                                <mapping>
+                                    <directory>/opt/connector</directory>
+                                    <filemode>755</filemode>
+                                    <username>tomcat</username>
+                                    <groupname>tomcat</groupname>
+                                    <artifact>
+                                        <classifiers>
+                                            <classifier></classifier>
+                                        </classifiers>
+                                    </artifact>
+                                </mapping>
+                            </mappings>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
 	</profiles>
 
 </project>
