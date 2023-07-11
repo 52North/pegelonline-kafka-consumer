@@ -197,8 +197,8 @@
                                 <mapping>
                                     <directory>/opt/connector</directory>
                                     <filemode>755</filemode>
-                                    <username>tomcat</username>
-                                    <groupname>tomcat</groupname>
+                                    <username>root</username>
+                                    <groupname>root</groupname>
                                     <artifact>
                                         <classifiers>
                                             <classifier></classifier>
