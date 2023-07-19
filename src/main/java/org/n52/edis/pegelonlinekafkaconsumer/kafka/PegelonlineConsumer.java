@@ -44,7 +44,7 @@ public class PegelonlineConsumer implements InitializingBean {
             PegelonlineTopic topic = topicEncoder.encode(message, ts);
             try {
                 if (mqttPublisher != null) {
-                    LOGGER.info("Try to publish measurement for timeseries {} and timestamp {} via MQTT.",
+                    LOGGER.info("Publish measurement for timeseries {} and timestamp {} via MQTT.",
                             mqttMessage.getTimeseries().getUuid(),
                             mqttMessage.getTimeseries().getMeasurement().getTimestamp());
                     if (mqttPublisher.isConnected()) {

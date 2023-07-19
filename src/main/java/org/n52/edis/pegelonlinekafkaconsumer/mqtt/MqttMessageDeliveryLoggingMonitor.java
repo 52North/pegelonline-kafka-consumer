@@ -24,12 +24,11 @@ public class MqttMessageDeliveryLoggingMonitor implements MqttMessageDeliveryMon
     @Override
     public void handleMessageDelivery(IMqttDeliveryToken token) {
         try {
-            PegelonlineMqttMessage message = jsonMapper.readValue(token.getMessage().getPayload(), PegelonlineMqttMessage.class);
-            LOGGER.info("Successfully delivered measurement for timeseries {} and timestamp {} on topic {}.",
-                    message.getTimeseries().getUuid(),
-                    message.getTimeseries().getMeasurement().getTimestamp(),
-                    token.getTopics()[0]);
-            LOGGER.debug("Message: {}", message);
+            LOGGER.info("Successfully published measurement on topic {}.", token.getTopics()[0]);
+            if(token.getMessage() != null) {
+                PegelonlineMqttMessage message = jsonMapper.readValue(token.getMessage().getPayload(), PegelonlineMqttMessage.class);
+                LOGGER.debug("Published message: {}", message);
+            }
         } catch (MqttException | IOException e) {
             LOGGER.error("Error while monitoring measurement delivery on topic {}. Cause: {}",
                     token.getTopics()[0], e.getMessage());
