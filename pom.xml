@@ -214,8 +214,8 @@
 									<directory>/opt/connector</directory>
 									<sources>
 										<softlinkSource>
-											<destination>/opt/connector/connector.jar</destination>
-											<location>/opt/connector/${project.artifactId}-${project.version}.jar</location>
+											<destination>connector.jar</destination>
+											<location>${project.artifactId}-${project.version}.jar</location>
 										</softlinkSource>
 									</sources>
 								</mapping>
