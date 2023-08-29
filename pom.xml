@@ -210,6 +210,15 @@
                                         </classifiers>
                                     </artifact>
                                 </mapping>
+								<mapping>
+									<directory>/opt/connector</directory>
+									<sources>
+										<softlinkSource>
+											<destination>/opt/connector/connector.jar</destination>
+											<location>/opt/connector/${project.artifactId}-${project.version}.jar</location>
+										</softlinkSource>
+									</sources>
+								</mapping>
                             </mappings>
                         </configuration>
                     </plugin>
