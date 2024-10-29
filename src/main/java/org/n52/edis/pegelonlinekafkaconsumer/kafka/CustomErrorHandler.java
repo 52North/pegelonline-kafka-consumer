@@ -12,14 +12,8 @@ public class CustomErrorHandler implements CommonErrorHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomErrorHandler.class);
 
-
     @Override
-    public boolean remainingRecords() {
-        return CommonErrorHandler.super.remainingRecords();
-    }
-
-    @Override
-    public void handleRecord(Exception ex, ConsumerRecord<?, ?> record, Consumer<?, ?> consumer, MessageListenerContainer container) {
+    public boolean handleOne(Exception ex, ConsumerRecord<?, ?> record, Consumer<?, ?> consumer, MessageListenerContainer container) {
         if(ex.getCause() instanceof DeserializationException) {
             DeserializationException desEx = ((DeserializationException)ex.getCause());
             String failedMessage = new String(desEx.getData());
@@ -29,6 +23,6 @@ public class CustomErrorHandler implements CommonErrorHandler {
             LOGGER.error("Unexpected error while consuming message. Cause: {}", ex.getMessage());
             LOGGER.debug("Consuming message error.", ex);
         }
+        return CommonErrorHandler.super.handleOne(ex, record, consumer, container);
     }
-
 }
