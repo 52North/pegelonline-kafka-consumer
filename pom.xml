@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.4.2</version>
+		<version>3.4.3</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
@@ -18,7 +18,7 @@
 		<url>https://gwk.itz.res.bund.de/scm/repo/edis/pegelonline-kafka-consumer</url>
 		<connection>https://gwk.itz.res.bund.de/scm/repo/edis/pegelonline-kafka-consumer</connection>
 		<developerConnection>scm:git:https://gwk.itz.res.bund.de/scm/repo/edis/pegelonline-kafka-consumer</developerConnection>
-	  	<tag>1.2.6</tag>
+	  	<tag>1.2.7</tag>
   	</scm>
 
 	<distributionManagement>
@@ -54,7 +54,7 @@
 		<dependency>
 			<groupId>org.springframework.integration</groupId>
 			<artifactId>spring-integration-mqtt</artifactId>
-			<version>6.4.1</version>
+			<version>6.4.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.paho</groupId>
@@ -77,12 +77,12 @@
 		<dependency>
 			<groupId>org.yaml</groupId>
 			<artifactId>snakeyaml</artifactId>
-			<version>2.3</version>
+			<version>2.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk18on</artifactId>
-			<version>1.78.1</version>
+			<version>1.80</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
