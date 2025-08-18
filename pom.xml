@@ -127,6 +127,14 @@
 					<pushChanges>false</pushChanges>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.cyclonedx</groupId>
+				<artifactId>cyclonedx-maven-plugin</artifactId>
+				<configuration>
+					<outputFormat>json</outputFormat>
+					<outputName>${project.artifactId}-${project.version}-bom</outputName>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
