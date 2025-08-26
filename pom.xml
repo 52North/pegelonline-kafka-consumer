@@ -130,10 +130,19 @@
 			<plugin>
 				<groupId>org.cyclonedx</groupId>
 				<artifactId>cyclonedx-maven-plugin</artifactId>
-				<configuration>
-					<outputFormat>json</outputFormat>
-					<outputName>${project.artifactId}-${project.version}-bom</outputName>
-				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>makeAggregateBom</goal>
+						</goals>
+						<configuration>
+							<outputFormat>json</outputFormat>
+							<outputName>${project.artifactId}-${project.version}-bom</outputName>
+							<outputDirectory>${project.build.directory}</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
@@ -226,6 +235,17 @@
 											<destination>connector.jar</destination>
 											<location>${project.artifactId}-${project.version}.jar</location>
 										</softlinkSource>
+									</sources>
+								</mapping>
+								<mapping>
+									<directory>/opt/connector</directory>
+									<filemode>755</filemode>
+									<username>root</username>
+									<groupname>root</groupname>
+									<sources>
+										<source>
+											<location>target/${project.artifactId}-${project.version}-bom.json</location>-->
+										</source>
 									</sources>
 								</mapping>
                             </mappings>
