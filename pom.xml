@@ -244,7 +244,7 @@
 									<groupname>root</groupname>
 									<sources>
 										<source>
-											<location>target/${project.artifactId}-${project.version}-bom.json</location>-->
+											<location>target/${project.artifactId}-bom.json</location>-->
 										</source>
 									</sources>
 								</mapping>
