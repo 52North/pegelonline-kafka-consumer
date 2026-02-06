@@ -38,7 +38,7 @@ public class MqttTlsPublisher extends MqttPublisher implements MqttCallback, Ini
         super(monitor);
     }
 
-    private static class Tls {
+    public static class Tls {
 
         private boolean peerVerificationEnabled;
 

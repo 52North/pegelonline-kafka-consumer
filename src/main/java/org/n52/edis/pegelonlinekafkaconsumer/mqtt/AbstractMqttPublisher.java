@@ -1,6 +1,6 @@
 package org.n52.edis.pegelonlinekafkaconsumer.mqtt;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JacksonException;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.n52.edis.pegelonlinekafkaconsumer.model.PegelonlineMqttMessage;
 import org.n52.edis.pegelonlinekafkaconsumer.model.PegelonlineTopic;
@@ -156,7 +156,7 @@ public abstract class AbstractMqttPublisher {
     public abstract boolean isConnected();
 
     public abstract void publishMessage(PegelonlineMqttMessage payload, PegelonlineTopic topic)
-            throws JsonProcessingException;
+            throws JacksonException;
 
     protected void logConfiguration() {
         LOGGER.debug("Server URI: {}", getServerUri());

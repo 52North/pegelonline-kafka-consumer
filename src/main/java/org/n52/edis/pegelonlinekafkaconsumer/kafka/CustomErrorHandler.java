@@ -14,8 +14,7 @@ public class CustomErrorHandler implements CommonErrorHandler {
 
     @Override
     public boolean handleOne(Exception ex, ConsumerRecord<?, ?> record, Consumer<?, ?> consumer, MessageListenerContainer container) {
-        if(ex.getCause() instanceof DeserializationException) {
-            DeserializationException desEx = ((DeserializationException)ex.getCause());
+        if(ex.getCause() instanceof DeserializationException desEx) {
             String failedMessage = new String(desEx.getData());
             LOGGER.error("Can not deserialize message '{}' on topic '{}'.", failedMessage, record.topic());
             LOGGER.debug("Deserialization error.", desEx);
