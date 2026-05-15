@@ -101,7 +101,7 @@ public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback
 
     protected MqttClient createMqttClient() throws MqttException {
         MqttClientPersistence persistence = createMqttClientPersistence();
-        mqttClient = new MqttClient(getServerUri(), createClientId(), persistence);
+        mqttClient = new MqttClient(getServerUris().get(0), createClientId(), persistence);
         mqttClient.setCallback(this);
         return mqttClient;
     }
@@ -117,6 +117,7 @@ public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback
 
     protected MqttConnectOptions createMqttConnectOptions() {
         MqttConnectOptions options = new MqttConnectOptions();
+        options.setServerURIs(getServerUris().toArray(new String[0]));
         options.setAutomaticReconnect(isReconnect());
         options.setCleanSession(isCleanSession());
         options.setConnectionTimeout(getConnectionTimeout());
