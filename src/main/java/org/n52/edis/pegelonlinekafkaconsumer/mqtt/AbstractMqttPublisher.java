@@ -1,17 +1,19 @@
 package org.n52.edis.pegelonlinekafkaconsumer.mqtt;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JacksonException;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.n52.edis.pegelonlinekafkaconsumer.model.PegelonlineMqttMessage;
 import org.n52.edis.pegelonlinekafkaconsumer.model.PegelonlineTopic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 public abstract class AbstractMqttPublisher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractMqttPublisher.class);
 
-    private String serverUri;
+    private List<String> serverUris;
     private String clientIdPrefix;
 
     private String clientId;
@@ -30,12 +32,12 @@ public abstract class AbstractMqttPublisher {
     private String username;
     private String password;
 
-    public String getServerUri() {
-        return serverUri;
+    public List<String> getServerUris() {
+        return serverUris;
     }
 
-    public void setServerUri(String serverUri) {
-        this.serverUri = serverUri;
+    public void setServerUris(List<String> serverUris) {
+        this.serverUris = serverUris;
     }
 
     public String getClientIdPrefix() {
@@ -156,10 +158,10 @@ public abstract class AbstractMqttPublisher {
     public abstract boolean isConnected();
 
     public abstract void publishMessage(PegelonlineMqttMessage payload, PegelonlineTopic topic)
-            throws JsonProcessingException;
+            throws JacksonException;
 
     protected void logConfiguration() {
-        LOGGER.debug("Server URI: {}", getServerUri());
+        LOGGER.debug("Server URI: {}", getServerUris());
         LOGGER.debug("Base topic: {}", getBaseTopic());
         LOGGER.debug("Connection timeout: {}", getConnectionTimeout());
         LOGGER.debug("Client ID prefix: {}", getClientIdPrefix());

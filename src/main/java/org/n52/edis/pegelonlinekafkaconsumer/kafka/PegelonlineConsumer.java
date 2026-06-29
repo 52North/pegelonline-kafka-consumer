@@ -1,6 +1,6 @@
 package org.n52.edis.pegelonlinekafkaconsumer.kafka;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JacksonException;
 import org.n52.edis.pegelonlinekafkaconsumer.encode.MessageEncoder;
 import org.n52.edis.pegelonlinekafkaconsumer.encode.TopicEncoder;
 import org.n52.edis.pegelonlinekafkaconsumer.model.PegelonlineKafkaMessage;
@@ -37,8 +37,8 @@ public class PegelonlineConsumer implements InitializingBean {
 
     @KafkaListener(id = "${edis.kafka.consumer.id}", topics = "${edis.kafka.consumer.topic}", groupId = "${edis.kafka.consumer.group}")
     public void consume(PegelonlineKafkaMessage message) {
-        LOGGER.debug(String.format("Received message: -> %s", message));
-        LOGGER.info(String.format("Received message for station: -> %s", message.getUuid()));
+        LOGGER.debug("Received message: -> {}", message);
+        LOGGER.info("Received message for station: -> {}", message.getUuid());
         message.getTimeseries().forEach(ts -> ts.getMeasurements().forEach(m -> {
             PegelonlineMqttMessage mqttMessage = messageEncoder.encode(message, ts, m);
             PegelonlineTopic topic = topicEncoder.encode(message, ts);
@@ -60,7 +60,7 @@ public class PegelonlineConsumer implements InitializingBean {
                             mqttMessage.getTimeseries().getUuid(),
                             mqttMessage.getTimeseries().getMeasurement().getTimestamp());
                 }
-            } catch (JsonProcessingException e) {
+            } catch (JacksonException e) {
                 LOGGER.error("Error while publishing MQTT message", e);
             }
         }));

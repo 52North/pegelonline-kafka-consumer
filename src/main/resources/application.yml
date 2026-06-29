@@ -22,7 +22,8 @@ edis:
       id: consumer01
   mqtt:
     enabled: true
-    server-uri: tcp://localhost:1883
+    server-uris:
+      - ssl://localhost:8883
     client-id-prefix: edis.pegelonline.kafka-consumer
     client-id: consumer01
     base-topic: edis/pegelonline
@@ -33,7 +34,7 @@ edis:
     initial-maxAttempts: 20
     initial-maxDelay: 100
     reconnect: true
-    clean-session: true
+    clean-session: false
     connection-timeout: 60
     keep-alive-interval: 60
     message-delivery-monitor: logging

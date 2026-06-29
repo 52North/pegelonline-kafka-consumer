@@ -1,6 +1,6 @@
 package org.n52.edis.pegelonlinekafkaconsumer.mqtt;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
@@ -11,11 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Recover;
-import org.springframework.retry.annotation.Retryable;
+import org.springframework.resilience.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
-
 import java.util.UUID;
 
 public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback, InitializingBean, DisposableBean {
@@ -28,7 +25,7 @@ public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback
 
     private MqttConnectOptions mqttConnectOptions;
 
-    private MqttMessageDeliveryMonitor monitor;
+    private final MqttMessageDeliveryMonitor monitor;
 
     public MqttPublisher() {
         monitor = new MqttMessageDeliveryLoggingMonitor();
@@ -39,31 +36,30 @@ public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback
     }
 
     @Async
-    @Retryable(value = MqttException.class,
-            maxAttemptsExpression = "${edis.mqtt.initial-connect-retry-attempts}",
-            backoff = @Backoff(delayExpression = "${edis.mqtt.initial-connect-retry-delay}"))
+    @Retryable(
+            includes = MqttException.class,
+            maxRetries = 3,
+            maxRetriesString = "${edis.mqtt.initial-connect-retry-attempts}",
+            maxDelay = 60000,
+            maxDelayString = "${edis.mqtt.initial-connect-retry-delay}"
+    )
     public void connect() throws MqttException {
         LOGGER.info("Trying to connect to MQTT broker...");
         try {
             mqttClient.connect(mqttConnectOptions);
         } catch (MqttException ex) {
             LOGGER.error("Could not connect to MQTT broker. Cause: {}", ex.getMessage());
-            LOGGER.debug("Mqtt command failure.", ex);
+            LOGGER.debug("MQTT command failure.", ex);
             throw ex;
         }
         LOGGER.info("Connection to MQTT broker successfully established.");
-    }
-
-    @Recover
-    void recover(MqttException ex) {
-        LOGGER.error("No initial connection to MQTT broker could be established. No MQTT support so far.");
     }
 
     public boolean isConnected() {
         return mqttClient.isConnected();
     }
 
-    public void publishMessage(PegelonlineMqttMessage payload, PegelonlineTopic topic) throws JsonProcessingException {
+    public void publishMessage(PegelonlineMqttMessage payload, PegelonlineTopic topic) throws JacksonException {
         MqttMessage message = new MqttMessage();
         message.setPayload(jsonMapper.writeValueAsBytes(payload));
         message.setQos(getQos());
@@ -105,7 +101,7 @@ public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback
 
     protected MqttClient createMqttClient() throws MqttException {
         MqttClientPersistence persistence = createMqttClientPersistence();
-        mqttClient = new MqttClient(getServerUri(), createClientId(), persistence);
+        mqttClient = new MqttClient(getServerUris().get(0), createClientId(), persistence);
         mqttClient.setCallback(this);
         return mqttClient;
     }
@@ -121,6 +117,7 @@ public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback
 
     protected MqttConnectOptions createMqttConnectOptions() {
         MqttConnectOptions options = new MqttConnectOptions();
+        options.setServerURIs(getServerUris().toArray(new String[0]));
         options.setAutomaticReconnect(isReconnect());
         options.setCleanSession(isCleanSession());
         options.setConnectionTimeout(getConnectionTimeout());

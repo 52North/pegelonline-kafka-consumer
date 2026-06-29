@@ -44,16 +44,15 @@ public class MqttMessageDeliveryLoggingMonitor implements MqttMessageDeliveryMon
                     m.getTimeseries().getUuid(),
                     m.getTimeseries().getMeasurement().getTimestamp(),
                     e.getMessage());
-            LOGGER.trace(String.format("Publishing MQTT message %s failed.", message), e);
+            LOGGER.trace("Publishing MQTT message {} failed.", message, e);
         } catch (IOException ex) {
             LOGGER.error("Error while monitoring measurement delivery fail. Cause: {}", e.getMessage());
             LOGGER.trace("Failed measurement delivery monitoring failed.", e);
         }
-
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         jsonMapper = createObjectMapper();
     }
 
