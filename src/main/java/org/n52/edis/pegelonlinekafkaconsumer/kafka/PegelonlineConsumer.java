@@ -14,7 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.listener.CommonErrorHandler;
+import org.springframework.kafka.listener.ConsumerRecordRecoverer;
+import org.springframework.kafka.listener.DefaultErrorHandler;
+import org.springframework.kafka.support.serializer.DeserializationException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.backoff.FixedBackOff;
 
 @Service
 public class PegelonlineConsumer implements InitializingBean {
@@ -32,7 +36,30 @@ public class PegelonlineConsumer implements InitializingBean {
 
     @Bean
     CommonErrorHandler errorHandler() {
-        return new CustomErrorHandler();
+        ConsumerRecordRecoverer recoverer = (record, exception) -> {
+            DeserializationException deserEx = findDeserializationException(exception);
+            if (deserEx != null) {
+                LOGGER.error("Can not deserialize message '{}' on topic '{}'. Skipping record.",
+                        new String(deserEx.getData()), record.topic());
+                LOGGER.debug("Deserialization error.", deserEx);
+            } else {
+                LOGGER.error("Unrecoverable error while consuming message on topic '{}'. Skipping record. Cause: {}",
+                        record.topic(), exception.getMessage());
+                LOGGER.debug("Consuming message error.", exception);
+            }
+        };
+        return new DefaultErrorHandler(recoverer, new FixedBackOff(1000L, 2));
+    }
+
+    private static DeserializationException findDeserializationException(Exception exception) {
+        Throwable cause = exception;
+        while (cause != null) {
+            if (cause instanceof DeserializationException deserEx) {
+                return deserEx;
+            }
+            cause = cause.getCause();
+        }
+        return null;
     }
 
     @KafkaListener(id = "${edis.kafka.consumer.id}", topics = "${edis.kafka.consumer.topic}", groupId = "${edis.kafka.consumer.group}")
