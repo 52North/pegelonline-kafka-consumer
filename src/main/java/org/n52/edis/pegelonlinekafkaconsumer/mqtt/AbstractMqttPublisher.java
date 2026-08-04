@@ -32,6 +32,10 @@ public abstract class AbstractMqttPublisher {
     private String username;
     private String password;
 
+    private int workerThreads = 4;
+    private int queueCapacity = 1000;
+    private int maxInflight = 20;
+
     public List<String> getServerUris() {
         return serverUris;
     }
@@ -153,6 +157,30 @@ public abstract class AbstractMqttPublisher {
         this.password = password;
     }
 
+    public int getWorkerThreads() {
+        return workerThreads;
+    }
+
+    public void setWorkerThreads(int workerThreads) {
+        this.workerThreads = workerThreads;
+    }
+
+    public int getQueueCapacity() {
+        return queueCapacity;
+    }
+
+    public void setQueueCapacity(int queueCapacity) {
+        this.queueCapacity = queueCapacity;
+    }
+
+    public int getMaxInflight() {
+        return maxInflight;
+    }
+
+    public void setMaxInflight(int maxInflight) {
+        this.maxInflight = maxInflight;
+    }
+
     public abstract void connect() throws MqttException;
 
     public abstract boolean isConnected();
@@ -174,5 +202,8 @@ public abstract class AbstractMqttPublisher {
         LOGGER.debug("Qos: {}", getQos());
         LOGGER.debug("Retained: {}", isRetained());
         LOGGER.debug("Basic-Authentication: {}", isBasicAuthentication());
+        LOGGER.debug("Worker threads: {}", getWorkerThreads());
+        LOGGER.debug("Queue capacity: {}", getQueueCapacity());
+        LOGGER.debug("Max inflight: {}", getMaxInflight());
     }
 }

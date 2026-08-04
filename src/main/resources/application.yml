@@ -39,6 +39,10 @@ edis:
     keep-alive-interval: 60
     message-delivery-monitor: logging
     qos: 0
+    worker-threads: 4
+    queue-capacity: 1000
+    # Must be >= worker-threads (+1) or Paho throws REASON_CODE_MAX_INFLIGHT (32202) under load.
+    max-inflight: 20
     basic-authentication: true
     username: rabbitmq
     password: rabbitmq

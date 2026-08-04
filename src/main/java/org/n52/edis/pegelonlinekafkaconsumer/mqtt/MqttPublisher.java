@@ -14,16 +14,25 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.resilience.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
 import java.util.UUID;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback, InitializingBean, DisposableBean {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MqttPublisher.class);
+
+    private static final long SHUTDOWN_AWAIT_SECONDS = 30;
 
     private ObjectMapper jsonMapper;
 
     private MqttClient mqttClient;
 
     private MqttConnectOptions mqttConnectOptions;
+
+    private ThreadPoolExecutor publishExecutor;
 
     private final MqttMessageDeliveryMonitor monitor;
 
@@ -60,13 +69,21 @@ public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback
     }
 
     public void publishMessage(PegelonlineMqttMessage payload, PegelonlineTopic topic) throws JacksonException {
+        // Serialize on the calling (Kafka listener) thread so JacksonException still propagates.
         MqttMessage message = new MqttMessage();
         message.setPayload(jsonMapper.writeValueAsBytes(payload));
         message.setQos(getQos());
         message.setRetained(isRetained());
+        String topicString = topic.asTopicString();
+        // Hand the blocking network publish to the worker pool. A full queue makes the caller
+        // run the publish inline (CallerRunsPolicy), throttling Kafka polling instead of dropping.
+        publishExecutor.execute(() -> doPublish(topicString, message));
+    }
+
+    private void doPublish(String topicString, MqttMessage message) {
         try {
-            mqttClient.publish(topic.asTopicString(), message);
-        } catch (MqttException e) {
+            mqttClient.publish(topicString, message);
+        } catch (MqttException | RuntimeException e) {
             monitor.handleFailedMessageDelivery(message, e);
         }
     }
@@ -93,6 +110,28 @@ public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback
         mqttClient = createMqttClient();
         mqttConnectOptions = createMqttConnectOptions();
         jsonMapper = createObjectMapper();
+        publishExecutor = createPublishExecutor();
+    }
+
+    protected ThreadPoolExecutor createPublishExecutor() {
+        // core == max so all workers are live and the bounded queue fills before CallerRuns engages.
+        ThreadFactory threadFactory = new ThreadFactory() {
+            private final AtomicInteger counter = new AtomicInteger();
+
+            @Override
+            public Thread newThread(Runnable r) {
+                Thread thread = new Thread(r, "mqtt-pub-" + counter.incrementAndGet());
+                thread.setDaemon(true);
+                return thread;
+            }
+        };
+        return new ThreadPoolExecutor(
+                getWorkerThreads(),
+                getWorkerThreads(),
+                0L, TimeUnit.MILLISECONDS,
+                new ArrayBlockingQueue<>(getQueueCapacity()),
+                threadFactory,
+                new ThreadPoolExecutor.CallerRunsPolicy());
     }
 
     protected ObjectMapper createObjectMapper() {
@@ -118,11 +157,22 @@ public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback
     protected MqttConnectOptions createMqttConnectOptions() {
         MqttConnectOptions options = new MqttConnectOptions();
         options.setServerURIs(getServerUris().toArray(new String[0]));
+        return applyCommonConnectOptions(options);
+    }
+
+    /**
+     * Applies the connection options shared by the plain and TLS publishers. Kept in one place so
+     * settings such as {@code maxInflight} cannot be forgotten in one of the two option builders.
+     */
+    protected MqttConnectOptions applyCommonConnectOptions(MqttConnectOptions options) {
         options.setAutomaticReconnect(isReconnect());
         options.setCleanSession(isCleanSession());
         options.setConnectionTimeout(getConnectionTimeout());
         options.setKeepAliveInterval(getKeepAliveInterval());
         options.setMqttVersion(MqttConnectOptions.MQTT_VERSION_3_1_1);
+        // Must be >= worker threads (+1 for the CallerRuns thread) or Paho throws
+        // REASON_CODE_MAX_INFLIGHT (32202) once several workers publish concurrently, even at QoS 0.
+        options.setMaxInflight(getMaxInflight());
         if (isBasicAuthentication()) {
             options.setUserName(getUsername());
             options.setPassword(getPassword().toCharArray());
@@ -141,6 +191,19 @@ public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback
 
     @Override
     public void destroy() throws Exception {
+        // Drain queued publishes before disconnecting the client. The Kafka container is a
+        // SmartLifecycle and is stopped before this DisposableBean runs, so no new tasks arrive here.
+        if (publishExecutor != null) {
+            publishExecutor.shutdown();
+            try {
+                if (!publishExecutor.awaitTermination(SHUTDOWN_AWAIT_SECONDS, TimeUnit.SECONDS)) {
+                    LOGGER.warn("Publish executor did not drain within {}s; {} task(s) may be lost.",
+                            SHUTDOWN_AWAIT_SECONDS, publishExecutor.getQueue().size());
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
         mqttClient.disconnect();
     }
 }

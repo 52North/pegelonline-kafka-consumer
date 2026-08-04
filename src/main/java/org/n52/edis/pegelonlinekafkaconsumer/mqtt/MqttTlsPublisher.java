@@ -102,16 +102,7 @@ public class MqttTlsPublisher extends MqttPublisher implements MqttCallback, Ini
 
     @Override
     protected MqttConnectOptions createMqttConnectOptions()  {
-        MqttConnectOptions options = new MqttConnectOptions();
-        options.setAutomaticReconnect(isReconnect());
-        options.setCleanSession(isCleanSession());
-        options.setConnectionTimeout(getConnectionTimeout());
-        options.setKeepAliveInterval(getKeepAliveInterval());
-        options.setMqttVersion(MqttConnectOptions.MQTT_VERSION_3_1_1);
-        if (isBasicAuthentication()) {
-            options.setUserName(getUsername());
-            options.setPassword(getPassword().toCharArray());
-        }
+        MqttConnectOptions options = applyCommonConnectOptions(new MqttConnectOptions());
 
         try {
             options.setSocketFactory(getSocketFactory(tls.getCaCertFile(), tls.getClientCertFile(),
@@ -122,7 +113,6 @@ public class MqttTlsPublisher extends MqttPublisher implements MqttCallback, Ini
             LOGGER.debug("Error while creating SSLSocketFactory.", ex);
         }
 
-        options.setCleanSession(true);
         return options;
     }
 
@@ -190,7 +180,7 @@ public class MqttTlsPublisher extends MqttPublisher implements MqttCallback, Ini
             throw new IOException(String.format("Unsupported type of private key %s", keyObject.getClass().getCanonicalName()));
         }
 
-        // Add client key and certificate to KeyStore and KeyManager. This cotrols, which certificates will be
+        // Add client key and certificate to KeyStore and KeyManager. This controls, which certificates will be
         // sent to the server during peer verification
         KeyStore clientKeyStore = KeyStore.getInstance(KeyStore.getDefaultType());
         clientKeyStore.load(null, null);
