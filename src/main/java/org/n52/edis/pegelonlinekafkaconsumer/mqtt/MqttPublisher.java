@@ -171,8 +171,6 @@ public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback
         options.setConnectionTimeout(getConnectionTimeout());
         options.setKeepAliveInterval(getKeepAliveInterval());
         options.setMqttVersion(MqttConnectOptions.MQTT_VERSION_3_1_1);
-        // Must be >= worker threads (+1 for the CallerRuns thread) or Paho throws
-        // REASON_CODE_MAX_INFLIGHT (32202) once several workers publish concurrently, even at QoS 0.
         options.setMaxInflight(getMaxInflight());
         if (isBasicAuthentication()) {
             options.setUserName(getUsername());

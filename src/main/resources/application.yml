@@ -14,6 +14,9 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    listener:
+      # Parallelize consumption across the topic's partitions (capped at the partition count).
+      concurrency: 3
 edis:
   kafka:
     consumer:
@@ -41,17 +44,19 @@ edis:
     qos: 0
     worker-threads: 4
     queue-capacity: 1000
-    # Must be >= worker-threads (+1) or Paho throws REASON_CODE_MAX_INFLIGHT (32202) under load.
+    # Must be >= worker threads + Kafka listener concurrency (each listener thread may also
+    # publish inline via CallerRuns) or Paho throws REASON_CODE_MAX_INFLIGHT (32202) once
+    # several callers publish concurrently, even at QoS 0.
     max-inflight: 20
     basic-authentication: true
     username: rabbitmq
     password: rabbitmq
     tls:
-      tls-enabled: false
+      tls-enabled: true
       peer-verification-enabled: true
-      ca-cert-file: "/path/to/caCertFile.pem"
-      client-cert-file: "/path/to/clientCertFile.pem"
-      key-file: "/path/to/clientKey.pem"
+      ca-cert-file: "C:/Users/Sebastian/Entwicklung/Projekte/edis/pegelonline-kafka-consumer/docker/certs/ca_certificate.pem"
+      client-cert-file: "C:/Users/Sebastian/Entwicklung/Projekte/edis/pegelonline-kafka-consumer/docker/certs/client_certificate.pem"
+      key-file: "C:/Users/Sebastian/Entwicklung/Projekte/edis/pegelonline-kafka-consumer/docker/certs/client_key.pem"
       password: "bunnies"
 logging:
   level:
