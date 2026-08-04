@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.eclipse.paho.client.mqttv3.persist.MqttDefaultFilePersistence;
+import org.jspecify.annotations.NonNull;
 import org.n52.edis.pegelonlinekafkaconsumer.model.PegelonlineMqttMessage;
 import org.n52.edis.pegelonlinekafkaconsumer.model.PegelonlineTopic;
 import org.slf4j.Logger;
@@ -119,7 +120,7 @@ public class MqttPublisher extends AbstractMqttPublisher implements MqttCallback
             private final AtomicInteger counter = new AtomicInteger();
 
             @Override
-            public Thread newThread(Runnable r) {
+            public Thread newThread(@NonNull Runnable r) {
                 Thread thread = new Thread(r, "mqtt-pub-" + counter.incrementAndGet());
                 thread.setDaemon(true);
                 return thread;

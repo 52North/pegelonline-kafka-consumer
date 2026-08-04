@@ -167,17 +167,19 @@ public class MqttTlsPublisher extends MqttPublisher implements MqttCallback, Ini
         PrivateKey privateKey;
         JcaPEMKeyConverter keyConverter = new JcaPEMKeyConverter().setProvider("BC");
 
-        if (keyObject instanceof PEMEncryptedKeyPair) {
-            PEMDecryptorProvider provider = new JcePEMDecryptorProviderBuilder().build(password.toCharArray());
-            KeyPair keyPair = keyConverter.getKeyPair(((PEMEncryptedKeyPair) keyObject).decryptKeyPair(provider));
-            privateKey = keyPair.getPrivate();
-        } else if (keyObject instanceof PEMKeyPair) {
-            KeyPair keyPair = keyConverter.getKeyPair((PEMKeyPair) keyObject);
-            privateKey = keyPair.getPrivate();
-        } else if (keyObject instanceof PrivateKeyInfo) {
-            privateKey = keyConverter.getPrivateKey((PrivateKeyInfo) keyObject);
-        } else {
-            throw new IOException(String.format("Unsupported type of private key %s", keyObject.getClass().getCanonicalName()));
+        switch (keyObject) {
+            case PEMEncryptedKeyPair pemEncryptedKeyPair -> {
+                PEMDecryptorProvider provider = new JcePEMDecryptorProviderBuilder().build(password.toCharArray());
+                KeyPair keyPair = keyConverter.getKeyPair(pemEncryptedKeyPair.decryptKeyPair(provider));
+                privateKey = keyPair.getPrivate();
+            }
+            case PEMKeyPair pemKeyPair -> {
+                KeyPair keyPair = keyConverter.getKeyPair(pemKeyPair);
+                privateKey = keyPair.getPrivate();
+            }
+            case PrivateKeyInfo privateKeyInfo -> privateKey = keyConverter.getPrivateKey(privateKeyInfo);
+            default ->
+                    throw new IOException(String.format("Unsupported type of private key %s", keyObject.getClass().getCanonicalName()));
         }
 
         // Add client key and certificate to KeyStore and KeyManager. This controls, which certificates will be
